@@ -122,6 +122,7 @@
         /* Utilities */
         .hidden-section { display: none; }
         .rotate-180 { transform: rotate(180deg); }
+        
         .hidden { display: none; }
 
         /* Toast Notification */
@@ -164,610 +165,731 @@
             background-color: var(--primary);
             border-color: var(--primary);
         }
+
+        /* LOGIN SCREEN STYLES */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(153, 47%, 15%, 0.8) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(220, 40%, 15%, 0.8) 0px, transparent 50%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
     </style>
 </head>
-<body class="antialiased flex flex-col">
+<body class="antialiased flex flex-col h-screen">
 
     <!-- Toast Container -->
     <div id="toast-container"></div>
 
-    <!-- Navigation -->
-    <nav class="glass-panel sticky top-0 z-50 border-b border-green-900/30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-4 cursor-pointer group" onclick="navigateTo('home')">
-                    <img src="https://cdn.ggmax.com.br/images/c98da1bb9978031ddedc86ec3cfc8d49.sm.jpg" alt="Logo RPS" class="w-12 h-12 rounded-lg border-2 border-green-500/50 object-cover group-hover:border-green-400 transition duration-300 shadow-lg shadow-green-900/20">
-                    <div>
-                        <span class="text-3xl font-bold brand-font tracking-wide text-white block leading-none">INSTRUTOR</span>
-                        <span class="text-xs text-green-500 font-bold tracking-[0.2em] uppercase">R.P.S. Lado Leste</span>
-                    </div>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-center space-x-8">
-                        <button onclick="navigateTo('home')" id="nav-home" class="nav-link active font-medium uppercase text-sm tracking-wider">Dashboard</button>
-                        <button onclick="navigateTo('anuncios')" id="nav-anuncios" class="nav-link font-medium uppercase text-sm tracking-wider">Scripts</button>
-                        <button onclick="navigateTo('guia')" id="nav-guia" class="nav-link font-medium uppercase text-sm tracking-wider">Formação</button>
-                        <button onclick="navigateTo('materiais')" id="nav-materiais" class="nav-link font-medium uppercase text-sm tracking-wider text-green-400"><i class="fas fa-folder-open mr-1"></i> Materiais</button>
-                        <button onclick="navigateTo('gestao')" id="nav-gestao" class="nav-link font-medium uppercase text-sm tracking-wider">Gestão</button>
-                        
-                        <!-- Botão Códigos Q (Novo) -->
-                        <button onclick="toggleModal('modal-codes')" class="nav-link font-medium uppercase text-sm tracking-wider text-yellow-500 hover:text-yellow-400 border border-yellow-500/30 px-3 py-1 rounded bg-yellow-500/10 hover:bg-yellow-500/20 transition">
-                            <i class="fas fa-list-ol mr-1"></i> Códigos
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="-mr-2 flex md:hidden">
-                    <button onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
+    <!-- ============================================== -->
+    <!-- TELA DE LOGIN (NOVO) -->
+    <!-- ============================================== -->
+    <div id="login-screen">
+        <div class="login-box glass-panel rounded-2xl border border-green-500/30 shadow-[0_0_50px_rgba(34,197,94,0.1)]">
+            <div class="text-center mb-8">
+                <img src="https://cdn.ggmax.com.br/images/c98da1bb9978031ddedc86ec3cfc8d49.sm.jpg" alt="Logo" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-green-500 shadow-lg object-cover">
+                <h1 class="text-3xl font-bold brand-font text-white tracking-widest">Acesso Restrito</h1>
+                <p class="text-green-500 text-sm font-bold tracking-[0.2em] uppercase">Instrutor R.P.S.</p>
             </div>
-        </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-black/95 border-t border-gray-800">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <button onclick="navigateTo('home')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Dashboard</button>
-                <button onclick="navigateTo('anuncios')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Scripts</button>
-                <button onclick="navigateTo('guia')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Curso de Formação</button>
-                <button onclick="navigateTo('materiais')" class="text-green-400 font-bold block px-3 py-4 rounded-md text-base w-full text-left border-b border-gray-800">Materiais</button>
-                <button onclick="navigateTo('gestao')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left">Gestão</button>
-                <button onclick="toggleModal('modal-codes')" class="text-yellow-500 font-bold block px-3 py-4 rounded-md text-base w-full text-left border-t border-gray-800 mt-2">
-                    <i class="fas fa-list-ol mr-2"></i> Tabela de Códigos
+            <form onsubmit="handleLogin(event)" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-gray-400 text-xs font-bold uppercase tracking-wider ml-1">Identificação (Login)</label>
+                    <div class="relative">
+                        <i class="fas fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="text" id="loginUser" class="w-full bg-black/40 border border-gray-700 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block pl-10 p-3 placeholder-gray-600 focus:outline-none transition" placeholder="Digite seu Login" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-gray-400 text-xs font-bold uppercase tracking-wider ml-1">Senha de Acesso</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="password" id="loginPass" class="w-full bg-black/40 border border-gray-700 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block pl-10 p-3 placeholder-gray-600 focus:outline-none transition" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full text-black bg-green-600 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-800 font-bold rounded-lg text-sm px-5 py-3 text-center uppercase tracking-widest transition transform hover:-translate-y-1 shadow-lg shadow-green-900/50">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Entrar no Sistema
                 </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-xs text-gray-600">Sistema Seguro • Lado Leste</p>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- CONTENT SECTIONS -->
-    <main class="flex-grow container mx-auto px-4 py-8">
+    <!-- ============================================== -->
+    <!-- CONTEÚDO DO APP (Protegido) -->
+    <!-- ============================================== -->
+    <div id="app-content" class="hidden flex flex-col min-h-screen">
         
-        <!-- SECTION: HOME / DASHBOARD -->
-        <div id="home" class="fade-in">
-            <div class="relative rounded-2xl overflow-hidden mb-12 border border-white/10 shadow-2xl">
-                <!-- Hero Image & Gradient -->
-                <div class="absolute inset-0 bg-[url('https://cdn.ggmax.com.br/images/3400299ce04a8af83413b27ab7659b36.sm.jpg')] bg-cover bg-center opacity-40"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent"></div>
-                
-                <div class="relative z-10 py-24 px-6 text-center">
-                    <div class="inline-block p-4 rounded-full bg-green-500/10 border border-green-500/30 backdrop-blur-md mb-6">
-                        <i class="fas fa-file-contract text-5xl text-green-400"></i>
-                    </div>
-                    <!-- Typing Effect Added -->
-                    <div class="flex justify-center mb-4">
-                        <h1 class="text-4xl md:text-7xl font-bold text-white drop-shadow-lg tracking-wider typing-container">PAINEL DO INSTRUTOR</h1>
-                    </div>
-                    
-                    <p class="text-xl text-green-400 font-medium tracking-widest uppercase mb-10">Ferramenta Oficial de Apoio R.P.S.</p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="navigateTo('anuncios')" class="bg-green-600 hover:bg-green-500 text-black font-bold py-4 px-10 rounded-lg shadow-[0_0_20px_rgba(34,197,94,0.3)] transition transform hover:-translate-y-1 uppercase tracking-wider flex items-center justify-center gap-2">
-                            <i class="fas fa-bullhorn"></i> Scripts de Anúncio
-                        </button>
-                        <button onclick="navigateTo('gestao')" class="bg-white/10 hover:bg-white/20 backdrop-blur text-white font-bold py-4 px-10 rounded-lg border border-white/20 transition transform hover:-translate-y-1 uppercase tracking-wider flex items-center justify-center gap-2">
-                            <i class="fas fa-calendar-check"></i> Emitir Relatório
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div onclick="navigateTo('anuncios')" class="glass-panel p-8 rounded-xl hover:border-green-500/50 transition cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-125">
-                        <i class="fas fa-clock text-9xl text-white"></i>
-                    </div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 text-green-400 group-hover:bg-green-500 group-hover:text-black transition">
-                            <i class="fas fa-clock text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Horários & Scripts</h3>
-                        <p class="text-gray-400 text-sm">Copie os anúncios de recrutamento com apenas um clique.</p>
-                    </div>
-                </div>
-
-                <div onclick="navigateTo('guia')" class="glass-panel p-8 rounded-xl hover:border-green-500/50 transition cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-125">
-                        <i class="fas fa-book text-9xl text-white"></i>
-                    </div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 text-blue-400 group-hover:bg-blue-500 group-hover:text-black transition">
-                            <i class="fas fa-book-open text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Curso de Formação</h3>
-                        <p class="text-gray-400 text-sm">Slides, Manuais e Passo a Passo para instrução.</p>
-                    </div>
-                </div>
-
-                <div onclick="navigateTo('gestao')" class="glass-panel p-8 rounded-xl hover:border-green-500/50 transition cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-125">
-                        <i class="fas fa-clipboard-check text-9xl text-white"></i>
-                    </div>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4 text-purple-400 group-hover:bg-purple-500 group-hover:text-black transition">
-                            <i class="fas fa-file-signature text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Certificados & Agenda</h3>
-                        <p class="text-gray-400 text-sm">Emissão de relatórios e agendamento automático.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION: ANUNCIOS -->
-        <div id="anuncios" class="hidden-section fade-in max-w-5xl mx-auto">
-            <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-1">Scripts de Recrutamento</h2>
-                    <p class="text-gray-400 text-sm">Comando in-game: <code class="bg-green-900/30 text-green-400 px-2 py-0.5 rounded border border-green-900">/anump</code></p>
-                </div>
-                <div class="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/30">
-                    <i class="fas fa-bullhorn text-green-500"></i>
-                </div>
-            </div>
-
-            <div id="cards-container" class="grid grid-cols-1 gap-6">
-                <!-- Javascript injects cards here -->
-            </div>
-        </div>
-
-        <!-- SECTION: MATERIAIS -->
-        <div id="materiais" class="hidden-section fade-in max-w-6xl mx-auto">
-            <div class="text-center mb-12">
-                <span class="text-green-500 font-bold tracking-[0.3em] uppercase text-xs">Biblioteca Digital</span>
-                <h2 class="text-4xl font-bold text-white mt-2 mb-4">Materiais de Apoio</h2>
-                <div class="h-1 w-24 bg-green-600 mx-auto rounded-full"></div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- R.P.S -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded bg-green-500 flex items-center justify-center text-black font-bold"><i class="fas fa-shield-alt"></i></div>
-                        <h3 class="text-xl font-bold text-white">Documentos R.P.S.</h3>
-                    </div>
-
-                    <a href="https://drive.google.com/file/d/1HCcU4UBFyItlalWAnCCbCx4SwDWbmDfQ/view?usp=sharing" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-green-500">
-                        <div class="flex items-center gap-4">
-                            <i class="fas fa-file-pdf text-2xl text-red-500"></i>
-                            <div>
-                                <h4 class="text-white font-bold group-hover:text-green-400 transition">Manual de Conduta</h4>
-                                <p class="text-xs text-gray-400">Regras Oficiais</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
-                    </a>
-
-                    <a href="https://linktr.ee/dpmll.rps" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-green-500">
-                        <div class="flex items-center gap-4">
-                            <i class="fas fa-tree text-2xl text-green-500"></i>
-                            <div>
-                                <h4 class="text-white font-bold group-hover:text-green-400 transition">Módulos do Curso MAP</h4>
-                                <p class="text-xs text-gray-400">Linktree Completo</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
-                    </a>
-
-                    <a href="https://drive.google.com/file/d/1iewHyQZ0FFMTM84tu2k6eSsgIsCh-FCq/view?usp=sharing" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-yellow-500">
-                        <div class="flex items-center gap-4">
-                            <i class="fas fa-gavel text-2xl text-yellow-500"></i>
-                            <div>
-                                <h4 class="text-white font-bold group-hover:text-yellow-400 transition">Orientações Penal</h4>
-                                <p class="text-xs text-gray-400">Procedimentos Legais</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
-                    </a>
-
-                    <a href="https://drive.google.com/file/d/1SWq-qJ2Wc7C5OExP2Kn4BhgrcaM4_k1K/view?usp=sharing" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-purple-500">
-                        <div class="flex items-center gap-4">
-                            <i class="fas fa-list-ul text-2xl text-purple-500"></i>
-                            <div>
-                                <h4 class="text-white font-bold group-hover:text-purple-400 transition">Curso MAP</h4>
-                                <p class="text-xs text-gray-400">Síntese para Estudo</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
-                    </a>
-                </div>
-
-                <!-- COT & Avisos -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded bg-red-600 flex items-center justify-center text-white font-bold"><i class="fas fa-crosshairs"></i></div>
-                        <h3 class="text-xl font-bold text-white">Treinamento C.O.T</h3>
-                    </div>
-
-                    <a href="https://www.canva.com/design/DAGfE4hXprs/Gd7R49x4QID4Jbg_wXqXmQ/view" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-red-500">
-                        <div class="flex items-center gap-4">
-                            <i class="fas fa-presentation-screen text-2xl text-orange-500"></i>
-                            <div>
-                                <h4 class="text-white font-bold group-hover:text-red-400 transition">Slide: Sub-Fuzil / Alto Risco</h4>
-                                <p class="text-xs text-gray-400">Material Visual Canva</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
-                    </a>
-
-                    <!-- Warning -->
-                    <div class="mt-8 glass-panel p-6 rounded-lg border border-red-900/50 bg-red-950/10">
-                        <div class="flex items-start gap-4">
-                            <i class="fas fa-triangle-exclamation text-red-500 text-2xl mt-1"></i>
-                            <div>
-                                <h4 class="text-red-500 font-bold uppercase mb-2">Aviso de Responsabilidade</h4>
-                                <p class="text-sm text-gray-400 leading-relaxed text-justify">
-                                    Estes materiais possuem grande valor. Após aprovação, o oficial que não seguir as diretrizes estará sujeito à <strong class="text-white">perda da certificação</strong>. Em caso de dúvidas, contate o comando.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION: GUIA (FORMAÇÃO) -->
-        <div id="guia" class="hidden-section fade-in max-w-5xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-1">Curso de Formação</h2>
-                    <p class="text-gray-400 text-sm">Roteiro padrão para instrução de novos recrutas.</p>
-                </div>
-                <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/30">
-                    <i class="fas fa-chalkboard-teacher text-blue-500"></i>
-                </div>
-            </div>
-
-             <!-- Intro Box -->
-             <div class="glass-panel p-6 rounded-lg border-l-4 border-blue-500 mb-8">
-                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                    <i class="fas fa-info-circle text-blue-500"></i> Orientação Inicial
-                </h3>
-                <p class="text-gray-400 text-sm">
-                    A presença de todos os recrutas aprovados é obrigatória nesta etapa. Aqui são repassadas as informações primordiais para o ingresso na corporação.
-                </p>
-            </div>
-
-            <div class="space-y-4">
-                <!-- Step 1 -->
-                <div class="glass-panel rounded-lg overflow-hidden">
-                    <button onclick="toggleAccordion('step1')" class="w-full flex justify-between items-center px-6 py-5 bg-white/5 hover:bg-white/10 transition text-left">
-                        <span class="font-bold text-white text-lg flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center text-sm">1</span>
-                            Apresentação Pessoal
-                        </span>
-                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300" id="icon-step1"></i>
-                    </button>
-                    <div id="step1" class="hidden px-8 py-6 border-t border-gray-800/50">
-                        <!-- Checklist Interativo -->
-                        <ul class="space-y-3 mt-2">
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm">O Instrutor deve se apresentar formalmente.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm">Ensinar aos recrutas a postura padrão de apresentação (continência, voz firme).</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="glass-panel rounded-lg overflow-hidden">
-                    <button onclick="toggleAccordion('step2')" class="w-full flex justify-between items-center px-6 py-5 bg-white/5 hover:bg-white/10 transition text-left">
-                        <span class="font-bold text-white text-lg flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-sm">2</span>
-                            Email (Discord) & Regras
-                        </span>
-                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300" id="icon-step2"></i>
-                    </button>
-                    <div id="step2" class="hidden px-8 py-6 border-t border-gray-800/50">
-                        <!-- Checklist Interativo -->
-                        <ul class="space-y-3 mt-2">
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm"><strong>Navegação:</strong> Ensinar como abrir tickets, ver calendário de cursos e registrar prisões.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm"><strong>Equipamento Obrigatório:</strong> Algema, attachs, cassetete, colete, glock, munição, kit residual/químico, rádio, roupa de mergulho e tazer.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm"><strong>Fardamento & Estética:</strong> Proibido máscaras, óculos escuros, chapéus não oficiais. Cabelo/Barba padrão militar.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm"><strong>Braçal:</strong> Uso obrigatório na cor amarela para recrutas.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm"><strong>Regulamento:</strong> Ler e explicar as regras na aba <code>#regras-polícia</code>.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm"><strong>Cursos Obrigatórios:</strong> Explicar sobre MAP e Sub-Fuzil (Prazo de 7 dias ou exoneração).</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="glass-panel rounded-lg overflow-hidden">
-                    <button onclick="toggleAccordion('step3')" class="w-full flex justify-between items-center px-6 py-5 bg-white/5 hover:bg-white/10 transition text-left">
-                        <span class="font-bold text-white text-lg flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center text-sm">3</span>
-                            Tour pelo Departamento
-                        </span>
-                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300" id="icon-step3"></i>
-                    </button>
-                    <div id="step3" class="hidden px-8 py-6 border-t border-gray-800/50">
-                        <ul class="space-y-3 mt-2">
-                             <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm">Apresentar: Garagens, Arsenal, Vestiário, Celas e Enfermaria.</span>
-                            </li>
-                             <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm">Explicar áreas restritas (Civil vs Militar).</span>
-                            </li>
-                             <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
-                                <span class="text-gray-300 text-sm">Local de alinhamento para ações e cerimônias.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION: GESTÃO (FERRAMENTAS) -->
-        <div id="gestao" class="hidden-section fade-in max-w-5xl mx-auto">
-            <div class="text-center mb-10">
-                <span class="text-green-500 font-bold tracking-[0.3em] uppercase text-xs">Administração</span>
-                <h2 class="text-3xl font-bold text-white mt-2">Central de Operações</h2>
-            </div>
-
-            <!-- Custom Tab Switcher -->
-            <div class="flex justify-center mb-8 bg-gray-900/50 p-1 rounded-full max-w-md mx-auto border border-white/10 backdrop-blur">
-                <button onclick="switchTab('tab-certificado')" id="btn-tab-certificado" class="flex-1 py-2 px-6 rounded-full text-sm font-bold uppercase transition-all duration-300 bg-green-600 text-white shadow-lg">
-                    Certificados
-                </button>
-                <button onclick="switchTab('tab-agenda')" id="btn-tab-agenda" class="flex-1 py-2 px-6 rounded-full text-sm font-bold uppercase transition-all duration-300 text-gray-400 hover:text-white">
-                    Agendamento
-                </button>
-            </div>
-
-            <!-- CONTAINER: CERTIFICADO -->
-            <div id="tab-certificado" class="glass-panel rounded-xl overflow-hidden p-8 animate-fade-in-up">
-                <!-- Discord Button -->
-                <a href="https://discord.com/channels/1229010816473370726/1294992375000731718" target="_blank" class="block w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 rounded-lg text-center mb-8 transition transform hover:scale-[1.01] shadow-lg flex items-center justify-center gap-2">
-                    <i class="fab fa-discord text-xl"></i> Abrir Canal de Certificados
-                </a>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="space-y-4">
-                        <div class="input-group">
-                            <i class="fas fa-graduation-cap input-icon"></i>
-                            <select id="certCurso" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none appearance-none">
-                                <option value="CURSO SUB FUZIL / ALTO RISCO">Sub Fuzil / Alto Risco</option>
-                                <option value="CURSO DE PROGRESSÃO BANCO CENTRAL">Progressão Banco Central</option>
-                                <option value="CURSO DE PROGRESSÃO JOALHERIA">Progressão Joalheria</option>
-                                <option value="CURSO DE PROGRESSÃO BOBCAT">Progressão BobCat</option>
-                                <option value="CURSO DE PROGRESSÃO AÇOUGUE">Progressão Açougue</option>
-                            </select>
-                        </div>
-
-                        <!-- Smart Date System -->
-                        <div class="space-y-2">
-                            <div class="input-group">
-                                <i class="fas fa-calendar-day input-icon"></i>
-                                <input type="date" id="certData" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="setToday('certData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Hoje</button>
-                                <button onclick="setTomorrow('certData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Amanhã</button>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-clock input-icon"></i>
-                            <input type="text" id="certHorario" placeholder="Horário (Ex: 22h)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
-                        </div>
-
-                         <div class="input-group">
-                            <i class="fas fa-dollar-sign input-icon"></i>
-                            <select id="certValor" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none appearance-none">
-                                <option value="GRATUITO">GRATUITO</option>
-                                <option value="$10.000">$10.000</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="input-group">
-                            <i class="fas fa-user-tie input-icon"></i>
-                            <input type="text" id="certInstrutor" placeholder="Instrutor (@[Patente] Nome | ID)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
-                        </div>
-                        <div class="input-group">
-                             <i class="fas fa-users input-icon"></i>
-                            <textarea id="certAux" rows="2" placeholder="Auxiliares (Um por linha...)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
-                        </div>
-                        <div class="input-group">
-                             <i class="fas fa-check-circle input-icon"></i>
-                            <textarea id="certOficiais" rows="4" placeholder="Aprovados (@[Patente] Nome | ID)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none font-mono"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="generateCertificate()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fas fa-bolt"></i> Gerar Relatório
-                </button>
-
-                <!-- Output -->
-                <div id="certResult" class="hidden mt-6 animate-fade-in">
-                    <div class="bg-black/50 p-4 rounded-t-lg border border-gray-700 font-mono text-xs text-green-400 whitespace-pre-wrap" id="certOutput"></div>
-                    <button onclick="copyText('certOutput')" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-b-lg text-sm border-t border-gray-700 flex items-center justify-center gap-2">
-                        <i class="fas fa-copy"></i> Copiar
-                    </button>
-                </div>
-            </div>
-
-            <!-- CONTAINER: AGENDA -->
-            <div id="tab-agenda" class="glass-panel rounded-xl overflow-hidden p-8 hidden animate-fade-in-up">
-                 <!-- Discord Button -->
-                 <a href="https://discord.com/channels/1229010816473370726/1238358118958764165" target="_blank" class="block w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 rounded-lg text-center mb-8 transition transform hover:scale-[1.01] shadow-lg flex items-center justify-center gap-2">
-                    <i class="fab fa-discord text-xl"></i> Abrir Canal de Agenda
-                </a>
-
-                <!-- CRONÔMETRO TAF (NOVO) -->
-                <div class="glass-panel p-4 rounded-lg border border-gray-700 mb-8 flex items-center justify-between bg-black/40">
-                    <div class="flex items-center gap-4">
-                        <i class="fas fa-stopwatch text-3xl text-green-500"></i>
+        <!-- Navigation -->
+        <nav class="glass-panel sticky top-0 z-50 border-b border-green-900/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <!-- Logo -->
+                    <div class="flex items-center gap-4 cursor-pointer group" onclick="navigateTo('home')">
+                        <img src="https://cdn.ggmax.com.br/images/c98da1bb9978031ddedc86ec3cfc8d49.sm.jpg" alt="Logo RPS" class="w-12 h-12 rounded-lg border-2 border-green-500/50 object-cover group-hover:border-green-400 transition duration-300 shadow-lg shadow-green-900/20">
                         <div>
-                            <h4 class="text-white font-bold text-sm uppercase">Cronômetro TAF</h4>
-                            <div id="stopwatch-display" class="text-2xl font-mono text-green-400 font-bold tracking-widest">00:00:00</div>
+                            <span class="text-3xl font-bold brand-font tracking-wide text-white block leading-none">INSTRUTOR</span>
+                            <span class="text-xs text-green-500 font-bold tracking-[0.2em] uppercase">R.P.S. Lado Leste</span>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="startTimer()" class="bg-green-600 hover:bg-green-500 text-white w-10 h-10 rounded-full shadow-lg transition transform active:scale-95"><i class="fas fa-play"></i></button>
-                        <button onclick="stopTimer()" class="bg-red-600 hover:bg-red-500 text-white w-10 h-10 rounded-full shadow-lg transition transform active:scale-95"><i class="fas fa-pause"></i></button>
-                        <button onclick="resetTimer()" class="bg-gray-600 hover:bg-gray-500 text-white w-10 h-10 rounded-full shadow-lg transition transform active:scale-95"><i class="fas fa-redo"></i></button>
+
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-center space-x-6">
+                            <button onclick="navigateTo('home')" id="nav-home" class="nav-link active font-medium uppercase text-xs xl:text-sm tracking-wider">Dashboard</button>
+                            <button onclick="navigateTo('anuncios')" id="nav-anuncios" class="nav-link font-medium uppercase text-xs xl:text-sm tracking-wider">Scripts</button>
+                            <button onclick="navigateTo('guia')" id="nav-guia" class="nav-link font-medium uppercase text-xs xl:text-sm tracking-wider">Formação</button>
+                            <button onclick="navigateTo('materiais')" id="nav-materiais" class="nav-link font-medium uppercase text-xs xl:text-sm tracking-wider text-green-400"><i class="fas fa-folder-open mr-1"></i> Materiais</button>
+                            <button onclick="navigateTo('gestao')" id="nav-gestao" class="nav-link font-medium uppercase text-xs xl:text-sm tracking-wider">Gestão</button>
+                            <button onclick="navigateTo('controle')" id="nav-controle" class="nav-link font-medium uppercase text-xs xl:text-sm tracking-wider">Controle</button>
+                            
+                            <!-- Botão Códigos Q (Novo) -->
+                            <button onclick="toggleModal('modal-codes')" class="nav-link font-medium uppercase text-xs xl:text-sm tracking-wider text-yellow-500 hover:text-yellow-400 border border-yellow-500/30 px-3 py-1 rounded bg-yellow-500/10 hover:bg-yellow-500/20 transition">
+                                <i class="fas fa-list-ol mr-1"></i> Códigos
+                            </button>
+
+                            <!-- Logout Button -->
+                            <button onclick="doLogout()" class="text-red-500 hover:text-red-400 ml-4 transition" title="Sair">
+                                <i class="fas fa-power-off text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="-mr-2 flex md:hidden items-center gap-4">
+                        <button onclick="doLogout()" class="text-red-500 hover:text-red-400 transition">
+                            <i class="fas fa-power-off text-lg"></i>
+                        </button>
+                        <button onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none">
+                            <i class="fas fa-bars text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-black/95 border-t border-gray-800">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <button onclick="navigateTo('home')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Dashboard</button>
+                    <button onclick="navigateTo('anuncios')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Scripts</button>
+                    <button onclick="navigateTo('guia')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Curso de Formação</button>
+                    <button onclick="navigateTo('materiais')" class="text-green-400 font-bold block px-3 py-4 rounded-md text-base w-full text-left border-b border-gray-800">Materiais</button>
+                    <button onclick="navigateTo('gestao')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left border-b border-gray-800">Gestão</button>
+                    <button id="mobile-nav-controle" onclick="navigateTo('controle')" class="text-gray-300 hover:text-white block px-3 py-4 rounded-md text-base font-medium w-full text-left">Controle</button>
+                    <button onclick="toggleModal('modal-codes')" class="text-yellow-500 font-bold block px-3 py-4 rounded-md text-base w-full text-left border-t border-gray-800 mt-2">
+                        <i class="fas fa-list-ol mr-2"></i> Tabela de Códigos
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- CONTENT SECTIONS -->
+        <main class="flex-grow container mx-auto px-4 py-8">
+            
+            <!-- SECTION: HOME / DASHBOARD -->
+            <div id="home" class="fade-in">
+                <div class="relative rounded-2xl overflow-hidden mb-12 border border-white/10 shadow-2xl">
+                    <!-- Hero Image & Gradient -->
+                    <div class="absolute inset-0 bg-[url('https://cdn.ggmax.com.br/images/3400299ce04a8af83413b27ab7659b36.sm.jpg')] bg-cover bg-center opacity-40"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent"></div>
+                    
+                    <div class="relative z-10 py-24 px-6 text-center">
+                        <div class="inline-block p-4 rounded-full bg-green-500/10 border border-green-500/30 backdrop-blur-md mb-6">
+                            <i class="fas fa-file-contract text-5xl text-green-400"></i>
+                        </div>
+                        <!-- Typing Effect Added -->
+                        <div class="flex justify-center mb-4">
+                            <h1 class="text-4xl md:text-7xl font-bold text-white drop-shadow-lg tracking-wider typing-container">PAINEL DO INSTRUTOR</h1>
+                        </div>
+                        
+                        <p class="text-xl text-green-400 font-medium tracking-widest uppercase mb-10">Ferramenta Oficial de Apoio R.P.S.</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button onclick="navigateTo('anuncios')" class="bg-green-600 hover:bg-green-500 text-black font-bold py-4 px-10 rounded-lg shadow-[0_0_20px_rgba(34,197,94,0.3)] transition transform hover:-translate-y-1 uppercase tracking-wider flex items-center justify-center gap-2">
+                                <i class="fas fa-bullhorn"></i> Scripts de Anúncio
+                            </button>
+                            <button onclick="navigateTo('gestao')" class="bg-white/10 hover:bg-white/20 backdrop-blur text-white font-bold py-4 px-10 rounded-lg border border-white/20 transition transform hover:-translate-y-1 uppercase tracking-wider flex items-center justify-center gap-2">
+                                <i class="fas fa-calendar-check"></i> Emitir Relatório
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Agenda Type Selector -->
-                <div class="mb-6">
-                    <label class="block text-gray-400 text-sm font-bold mb-2 uppercase">Tipo de Agendamento</label>
-                    <select id="agendaType" onchange="toggleAgendaType()" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none appearance-none bg-gray-800 border-gray-600">
-                        <option value="map">Agendar MAP (Curso Básico)</option>
-                        <option value="taf">Agendar TAF (Teste de Aptidão Física)</option>
-                    </select>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div onclick="navigateTo('anuncios')" class="glass-panel p-8 rounded-xl hover:border-green-500/50 transition cursor-pointer group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-125">
+                            <i class="fas fa-clock text-9xl text-white"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 text-green-400 group-hover:bg-green-500 group-hover:text-black transition">
+                                <i class="fas fa-clock text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Horários & Scripts</h3>
+                            <p class="text-gray-400 text-sm">Copie os anúncios de recrutamento com apenas um clique.</p>
+                        </div>
+                    </div>
+
+                    <div onclick="navigateTo('guia')" class="glass-panel p-8 rounded-xl hover:border-green-500/50 transition cursor-pointer group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-125">
+                            <i class="fas fa-book text-9xl text-white"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 text-blue-400 group-hover:bg-blue-500 group-hover:text-black transition">
+                                <i class="fas fa-book-open text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Curso de Formação</h3>
+                            <p class="text-gray-400 text-sm">Slides, Manuais e Passo a Passo para instrução.</p>
+                        </div>
+                    </div>
+
+                    <div onclick="navigateTo('gestao')" class="glass-panel p-8 rounded-xl hover:border-green-500/50 transition cursor-pointer group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-125">
+                            <i class="fas fa-clipboard-check text-9xl text-white"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4 text-purple-400 group-hover:bg-purple-500 group-hover:text-black transition">
+                                <i class="fas fa-file-signature text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Certificados & Agenda</h3>
+                            <p class="text-gray-400 text-sm">Emissão de relatórios e agendamento automático.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: ANUNCIOS -->
+            <div id="anuncios" class="hidden-section fade-in max-w-5xl mx-auto">
+                <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-1">Scripts de Recrutamento</h2>
+                        <p class="text-gray-400 text-sm">Comando in-game: <code class="bg-green-900/30 text-green-400 px-2 py-0.5 rounded border border-green-900">/anump</code></p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/30">
+                        <i class="fas fa-bullhorn text-green-500"></i>
+                    </div>
                 </div>
 
-                <!-- FORM: MAP -->
-                <div id="form-map" class="animate-fade-in">
+                <div id="cards-container" class="grid grid-cols-1 gap-6">
+                    <!-- Javascript injects cards here -->
+                </div>
+            </div>
+
+            <!-- SECTION: MATERIAIS -->
+            <div id="materiais" class="hidden-section fade-in max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="text-green-500 font-bold tracking-[0.3em] uppercase text-xs">Biblioteca Digital</span>
+                    <h2 class="text-4xl font-bold text-white mt-2 mb-4">Materiais de Apoio</h2>
+                    <div class="h-1 w-24 bg-green-600 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- R.P.S -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded bg-green-500 flex items-center justify-center text-black font-bold"><i class="fas fa-shield-alt"></i></div>
+                            <h3 class="text-xl font-bold text-white">Documentos R.P.S.</h3>
+                        </div>
+
+                        <a href="https://drive.google.com/file/d/1HCcU4UBFyItlalWAnCCbCx4SwDWbmDfQ/view?usp=sharing" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-green-500">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-file-pdf text-2xl text-red-500"></i>
+                                <div>
+                                    <h4 class="text-white font-bold group-hover:text-green-400 transition">Manual de Conduta</h4>
+                                    <p class="text-xs text-gray-400">Regras Oficiais</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
+                        </a>
+
+                        <a href="https://linktr.ee/dpmll.rps" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-green-500">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-tree text-2xl text-green-500"></i>
+                                <div>
+                                    <h4 class="text-white font-bold group-hover:text-green-400 transition">Módulos do Curso MAP</h4>
+                                    <p class="text-xs text-gray-400">Linktree Completo</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/1iewHyQZ0FFMTM84tu2k6eSsgIsCh-FCq/view?usp=sharing" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-yellow-500">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-gavel text-2xl text-yellow-500"></i>
+                                <div>
+                                    <h4 class="text-white font-bold group-hover:text-yellow-400 transition">Orientações Penal</h4>
+                                    <p class="text-xs text-gray-400">Procedimentos Legais</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/1SWq-qJ2Wc7C5OExP2Kn4BhgrcaM4_k1K/view?usp=sharing" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-purple-500">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-list-ul text-2xl text-purple-500"></i>
+                                <div>
+                                    <h4 class="text-white font-bold group-hover:text-purple-400 transition">Curso MAP</h4>
+                                    <p class="text-xs text-gray-400">Síntese para Estudo</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
+                        </a>
+                    </div>
+
+                    <!-- COT & Avisos -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded bg-red-600 flex items-center justify-center text-white font-bold"><i class="fas fa-crosshairs"></i></div>
+                            <h3 class="text-xl font-bold text-white">Treinamento C.O.T</h3>
+                        </div>
+
+                        <a href="https://www.canva.com/design/DAGfE4hXprs/Gd7R49x4QID4Jbg_wXqXmQ/view" target="_blank" class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-white/5 transition group border-l-4 border-red-500">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-presentation-screen text-2xl text-orange-500"></i>
+                                <div>
+                                    <h4 class="text-white font-bold group-hover:text-red-400 transition">Slide: Sub-Fuzil / Alto Risco</h4>
+                                    <p class="text-xs text-gray-400">Material Visual Canva</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-600 group-hover:text-white transform group-hover:translate-x-1 transition"></i>
+                        </a>
+
+                        <!-- Warning -->
+                        <div class="mt-8 glass-panel p-6 rounded-lg border border-red-900/50 bg-red-950/10">
+                            <div class="flex items-start gap-4">
+                                <i class="fas fa-triangle-exclamation text-red-500 text-2xl mt-1"></i>
+                                <div>
+                                    <h4 class="text-red-500 font-bold uppercase mb-2">Aviso de Responsabilidade</h4>
+                                    <p class="text-sm text-gray-400 leading-relaxed text-justify">
+                                        Estes materiais possuem grande valor. Após aprovação, o oficial que não seguir as diretrizes estará sujeito à <strong class="text-white">perda da certificação</strong>. Em caso de dúvidas, contate o comando.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: GUIA (FORMAÇÃO) -->
+            <div id="guia" class="hidden-section fade-in max-w-5xl mx-auto">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-1">Curso de Formação</h2>
+                        <p class="text-gray-400 text-sm">Roteiro padrão para instrução de novos recrutas.</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/30">
+                        <i class="fas fa-chalkboard-teacher text-blue-500"></i>
+                    </div>
+                </div>
+
+                 <!-- Intro Box -->
+                 <div class="glass-panel p-6 rounded-lg border-l-4 border-blue-500 mb-8">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-blue-500"></i> Orientação Inicial
+                    </h3>
+                    <p class="text-gray-400 text-sm">
+                        A presença de todos os recrutas aprovados é obrigatória nesta etapa. Aqui são repassadas as informações primordiais para o ingresso na corporação.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Step 1 -->
+                    <div class="glass-panel rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('step1')" class="w-full flex justify-between items-center px-6 py-5 bg-white/5 hover:bg-white/10 transition text-left">
+                            <span class="font-bold text-white text-lg flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center text-sm">1</span>
+                                Apresentação Pessoal
+                            </span>
+                            <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300" id="icon-step1"></i>
+                        </button>
+                        <div id="step1" class="hidden px-8 py-6 border-t border-gray-800/50">
+                            <!-- Checklist Interativo -->
+                            <ul class="space-y-3 mt-2">
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm">O Instrutor deve se apresentar formalmente.</span>
+                                </li>
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm">Ensinar aos recrutas a postura padrão de apresentação (continência, voz firme).</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="glass-panel rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('step2')" class="w-full flex justify-between items-center px-6 py-5 bg-white/5 hover:bg-white/10 transition text-left">
+                            <span class="font-bold text-white text-lg flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-sm">2</span>
+                                Email (Discord) & Regras
+                            </span>
+                            <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300" id="icon-step2"></i>
+                        </button>
+                        <div id="step2" class="hidden px-8 py-6 border-t border-gray-800/50">
+                            <!-- Checklist Interativo -->
+                            <ul class="space-y-3 mt-2">
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm"><strong>Navegação:</strong> Ensinar como abrir tickets, ver calendário de cursos e registrar prisões.</span>
+                                </li>
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm"><strong>Equipamento Obrigatório:</strong> Algema, attachs, cassetete, colete, glock, munição, kit residual/químico, rádio, roupa de mergulho e tazer.</span>
+                                </li>
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm"><strong>Fardamento & Estética:</strong> Proibido máscaras, óculos escuros, chapéus não oficiais. Cabelo/Barba padrão militar.</span>
+                                </li>
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm"><strong>Braçal:</strong> Uso obrigatório na cor amarela para recrutas.</span>
+                                </li>
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm"><strong>Regulamento:</strong> Ler e explicar as regras na aba <code>#regras-polícia</code>.</span>
+                                </li>
+                                <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm"><strong>Cursos Obrigatórios:</strong> Explicar sobre MAP e Sub-Fuzil (Prazo de 7 dias ou exoneração).</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass-panel rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('step3')" class="w-full flex justify-between items-center px-6 py-5 bg-white/5 hover:bg-white/10 transition text-left">
+                            <span class="font-bold text-white text-lg flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center text-sm">3</span>
+                                Tour pelo Departamento
+                            </span>
+                            <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300" id="icon-step3"></i>
+                        </button>
+                        <div id="step3" class="hidden px-8 py-6 border-t border-gray-800/50">
+                            <ul class="space-y-3 mt-2">
+                                 <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm">Apresentar: Garagens, Arsenal, Vestiário, Celas e Enfermaria.</span>
+                                </li>
+                                 <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm">Explicar áreas restritas (Civil vs Militar).</span>
+                                </li>
+                                 <li class="flex items-start gap-3 p-2 rounded hover:bg-white/5 transition cursor-pointer" onclick="this.querySelector('input').click()">
+                                    <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600 text-green-500 focus:ring-green-500 bg-gray-700 cursor-pointer custom-checkbox">
+                                    <span class="text-gray-300 text-sm">Local de alinhamento para ações e cerimônias.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: GESTÃO (FERRAMENTAS) -->
+            <div id="gestao" class="hidden-section fade-in max-w-5xl mx-auto">
+                <div class="text-center mb-10">
+                    <span class="text-green-500 font-bold tracking-[0.3em] uppercase text-xs">Administração</span>
+                    <h2 class="text-3xl font-bold text-white mt-2">Central de Operações</h2>
+                </div>
+
+                <!-- Custom Tab Switcher -->
+                <div class="flex justify-center mb-8 bg-gray-900/50 p-1 rounded-full max-w-md mx-auto border border-white/10 backdrop-blur">
+                    <button onclick="switchTab('tab-certificado')" id="btn-tab-certificado" class="flex-1 py-2 px-6 rounded-full text-sm font-bold uppercase transition-all duration-300 bg-green-600 text-white shadow-lg">
+                        Certificados
+                    </button>
+                    <button onclick="switchTab('tab-agenda')" id="btn-tab-agenda" class="flex-1 py-2 px-6 rounded-full text-sm font-bold uppercase transition-all duration-300 text-gray-400 hover:text-white">
+                        Agendamento
+                    </button>
+                </div>
+
+                <!-- CONTAINER: CERTIFICADO -->
+                <div id="tab-certificado" class="glass-panel rounded-xl overflow-hidden p-8 animate-fade-in-up">
+                    <!-- Discord Button -->
+                    <a href="https://discord.com/channels/1229010816473370726/1294992375000731718" target="_blank" class="block w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 rounded-lg text-center mb-8 transition transform hover:scale-[1.01] shadow-lg flex items-center justify-center gap-2">
+                        <i class="fab fa-discord text-xl"></i> Abrir Canal de Certificados
+                    </a>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="space-y-4">
                             <div class="input-group">
-                                <i class="fas fa-user-shield input-icon"></i>
-                                <input type="text" id="mapSupervisor" placeholder="Supervisor" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                <i class="fas fa-graduation-cap input-icon"></i>
+                                <select id="certCurso" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none appearance-none">
+                                    <option value="CURSO SUB FUZIL / ALTO RISCO">Sub Fuzil / Alto Risco</option>
+                                    <option value="CURSO DE PROGRESSÃO BANCO CENTRAL">Progressão Banco Central</option>
+                                    <option value="CURSO DE PROGRESSÃO JOALHERIA">Progressão Joalheria</option>
+                                    <option value="CURSO DE PROGRESSÃO BOBCAT">Progressão BobCat</option>
+                                    <option value="CURSO DE PROGRESSÃO AÇOUGUE">Progressão Açougue</option>
+                                </select>
                             </div>
-                            <div class="input-group">
-                                <i class="fas fa-star input-icon"></i>
-                                <input type="text" id="mapChefe" placeholder="Chefe MAP" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+
+                            <!-- Smart Date System -->
+                            <div class="space-y-2">
+                                <div class="input-group">
+                                    <i class="fas fa-calendar-day input-icon"></i>
+                                    <input type="date" id="certData" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="setToday('certData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Hoje</button>
+                                    <button onclick="setTomorrow('certData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Amanhã</button>
+                                </div>
                             </div>
+
                             <div class="input-group">
-                                <i class="fas fa-user-plus input-icon"></i>
-                                <input type="text" id="mapAuxiliar" placeholder="Auxiliar" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                <i class="fas fa-clock input-icon"></i>
+                                <input type="text" id="certHorario" placeholder="Horário (Ex: 22h)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                            </div>
+
+                             <div class="input-group">
+                                <i class="fas fa-dollar-sign input-icon"></i>
+                                <select id="certValor" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none appearance-none">
+                                    <option value="GRATUITO">GRATUITO</option>
+                                    <option value="$10.000">$10.000</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="space-y-4">
                             <div class="input-group">
-                                <i class="fas fa-walkie-talkie input-icon"></i>
-                                <input type="text" id="mapInstModulacao" placeholder="Instrutor (Modulação)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                <i class="fas fa-user-tie input-icon"></i>
+                                <input type="text" id="certInstrutor" placeholder="Instrutor (@[Patente] Nome | ID)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
                             </div>
                             <div class="input-group">
-                                <i class="fas fa-car input-icon"></i>
-                                <input type="text" id="mapInstAcomp" placeholder="Instrutor (Acompanhamento)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                 <i class="fas fa-users input-icon"></i>
+                                <textarea id="certAux" rows="2" placeholder="Auxiliares (Um por linha...)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
                             </div>
                             <div class="input-group">
-                                <i class="fas fa-hand-paper input-icon"></i>
-                                <input type="text" id="mapInstAbordagem" placeholder="Instrutor (Abordagem)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                 <i class="fas fa-check-circle input-icon"></i>
+                                <textarea id="certOficiais" rows="4" placeholder="Aprovados (@[Patente] Nome | ID)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none font-mono"></textarea>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- FORM: TAF -->
-                <div id="form-taf" class="hidden animate-fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="space-y-4">
-                            <div class="input-group">
-                                <i class="fas fa-star input-icon"></i>
-                                <input type="text" id="tafChefe" placeholder="Chefe TAF" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
-                            </div>
-                            <div class="input-group">
-                                <i class="fas fa-user-check input-icon"></i>
-                                <textarea id="tafRecrutadores" rows="3" placeholder="Recrutadores (Um por linha)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <i class="fas fa-users input-icon"></i>
-                                <textarea id="tafAuxiliares" rows="3" placeholder="Auxiliares (Um por linha)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
-                            </div>
-                        </div>
+                    <button onclick="generateCertificate()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fas fa-bolt"></i> Gerar Relatório
+                    </button>
 
-                        <div class="space-y-4">
-                            <div class="input-group">
-                                <i class="fas fa-user-clock input-icon"></i>
-                                <textarea id="tafReservas" rows="3" placeholder="Reservas (Um por linha)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <i class="fas fa-chalkboard-teacher input-icon"></i>
-                                <input type="text" id="tafCursoFormacao" placeholder="Instrutor Curso Formação" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
-                            </div>
-                            <div class="input-group">
-                                <i class="fas fa-user-graduate input-icon"></i>
-                                <input type="text" id="tafCursoFormacaoAux" placeholder="Auxiliar Curso Formação" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
-                            </div>
-                        </div>
+                    <!-- Output -->
+                    <div id="certResult" class="hidden mt-6 animate-fade-in">
+                        <div class="bg-black/50 p-4 rounded-t-lg border border-gray-700 font-mono text-xs text-green-400 whitespace-pre-wrap" id="certOutput"></div>
+                        <button onclick="copyText('certOutput')" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-b-lg text-sm border-t border-gray-700 flex items-center justify-center gap-2">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
                     </div>
                 </div>
 
-                <!-- Common Fields for Agenda -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 pt-4 border-t border-gray-800">
-                    <!-- Smart Date System for Agenda -->
-                    <div class="space-y-2">
-                        <div class="input-group">
-                            <i class="fas fa-calendar-alt input-icon"></i>
-                            <input type="date" id="agendaData" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                <!-- CONTAINER: AGENDA -->
+                <div id="tab-agenda" class="glass-panel rounded-xl overflow-hidden p-8 hidden animate-fade-in-up">
+                     <!-- Discord Button -->
+                     <a href="https://discord.com/channels/1229010816473370726/1238358118958764165" target="_blank" class="block w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 rounded-lg text-center mb-8 transition transform hover:scale-[1.01] shadow-lg flex items-center justify-center gap-2">
+                        <i class="fab fa-discord text-xl"></i> Abrir Canal de Agenda
+                    </a>
+
+                    <!-- CRONÔMETRO TAF (NOVO) -->
+                    <div class="glass-panel p-4 rounded-lg border border-gray-700 mb-8 flex items-center justify-between bg-black/40">
+                        <div class="flex items-center gap-4">
+                            <i class="fas fa-stopwatch text-3xl text-green-500"></i>
+                            <div>
+                                <h4 class="text-white font-bold text-sm uppercase">Cronômetro TAF</h4>
+                                <div id="stopwatch-display" class="text-2xl font-mono text-green-400 font-bold tracking-widest">00:00:00</div>
+                            </div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="setToday('agendaData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Hoje</button>
-                            <button onclick="setTomorrow('agendaData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Amanhã</button>
+                            <button onclick="startTimer()" class="bg-green-600 hover:bg-green-500 text-white w-10 h-10 rounded-full shadow-lg transition transform active:scale-95"><i class="fas fa-play"></i></button>
+                            <button onclick="stopTimer()" class="bg-red-600 hover:bg-red-500 text-white w-10 h-10 rounded-full shadow-lg transition transform active:scale-95"><i class="fas fa-pause"></i></button>
+                            <button onclick="resetTimer()" class="bg-gray-600 hover:bg-gray-500 text-white w-10 h-10 rounded-full shadow-lg transition transform active:scale-95"><i class="fas fa-redo"></i></button>
                         </div>
                     </div>
 
-                    <div class="input-group h-fit">
-                        <i class="fas fa-map-marker-alt input-icon"></i>
-                        <input type="text" id="agendaLocal" value="Departamento Policial" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                    <!-- Agenda Type Selector -->
+                    <div class="mb-6">
+                        <label class="block text-gray-400 text-sm font-bold mb-2 uppercase">Tipo de Agendamento</label>
+                        <select id="agendaType" onchange="toggleAgendaType()" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none appearance-none bg-gray-800 border-gray-600">
+                            <option value="map">Agendar MAP (Curso Básico)</option>
+                            <option value="taf">Agendar TAF (Teste de Aptidão Física)</option>
+                        </select>
                     </div>
-                    <div class="input-group h-fit">
-                        <i class="fas fa-clock input-icon"></i>
-                        <input type="text" id="agendaHorario" placeholder="Horário (Ex: 16:00)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+
+                    <!-- FORM: MAP -->
+                    <div id="form-map" class="animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="space-y-4">
+                                <div class="input-group">
+                                    <i class="fas fa-user-shield input-icon"></i>
+                                    <input type="text" id="mapSupervisor" placeholder="Supervisor" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-star input-icon"></i>
+                                    <input type="text" id="mapChefe" placeholder="Chefe MAP" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-user-plus input-icon"></i>
+                                    <input type="text" id="mapAuxiliar" placeholder="Auxiliar" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="input-group">
+                                    <i class="fas fa-walkie-talkie input-icon"></i>
+                                    <input type="text" id="mapInstModulacao" placeholder="Instrutor (Modulação)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-car input-icon"></i>
+                                    <input type="text" id="mapInstAcomp" placeholder="Instrutor (Acompanhamento)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-hand-paper input-icon"></i>
+                                    <input type="text" id="mapInstAbordagem" placeholder="Instrutor (Abordagem)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="input-group mb-6">
-                    <i class="fas fa-calendar-day input-icon"></i>
-                    <input type="text" id="agendaDiaSemana" placeholder="Dia da Semana (Ex: SÁBADO / DOMINGO)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none uppercase">
-                </div>
 
-                <button onclick="generateAgenda()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fas fa-calendar-plus"></i> Gerar Agenda
-                </button>
+                    <!-- FORM: TAF -->
+                    <div id="form-taf" class="hidden animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="space-y-4">
+                                <div class="input-group">
+                                    <i class="fas fa-star input-icon"></i>
+                                    <input type="text" id="tafChefe" placeholder="Chefe TAF" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-user-check input-icon"></i>
+                                    <textarea id="tafRecrutadores" rows="3" placeholder="Recrutadores (Um por linha)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-users input-icon"></i>
+                                    <textarea id="tafAuxiliares" rows="3" placeholder="Auxiliares (Um por linha)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
+                                </div>
+                            </div>
 
-                 <!-- Output -->
-                 <div id="agendaResult" class="hidden mt-6 animate-fade-in">
-                    <div class="bg-black/50 p-4 rounded-t-lg border border-gray-700 font-mono text-xs text-green-400 whitespace-pre-wrap" id="agendaOutput"></div>
-                    <button onclick="copyText('agendaOutput')" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-b-lg text-sm border-t border-gray-700 flex items-center justify-center gap-2">
-                        <i class="fas fa-copy"></i> Copiar
+                            <div class="space-y-4">
+                                <div class="input-group">
+                                    <i class="fas fa-user-clock input-icon"></i>
+                                    <textarea id="tafReservas" rows="3" placeholder="Reservas (Um por linha)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-chalkboard-teacher input-icon"></i>
+                                    <input type="text" id="tafCursoFormacao" placeholder="Instrutor Curso Formação" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                                <div class="input-group">
+                                    <i class="fas fa-user-graduate input-icon"></i>
+                                    <input type="text" id="tafCursoFormacaoAux" placeholder="Auxiliar Curso Formação" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields for Agenda -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 pt-4 border-t border-gray-800">
+                        <!-- Smart Date System for Agenda -->
+                        <div class="space-y-2">
+                            <div class="input-group">
+                                <i class="fas fa-calendar-alt input-icon"></i>
+                                <input type="date" id="agendaData" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="setToday('agendaData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Hoje</button>
+                                <button onclick="setTomorrow('agendaData')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-xs py-1 rounded text-gray-300 border border-gray-700">Amanhã</button>
+                            </div>
+                        </div>
+
+                        <div class="input-group h-fit">
+                            <i class="fas fa-map-marker-alt input-icon"></i>
+                            <input type="text" id="agendaLocal" value="Departamento Policial" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                        </div>
+                        <div class="input-group h-fit">
+                            <i class="fas fa-clock input-icon"></i>
+                            <input type="text" id="agendaHorario" placeholder="Horário (Ex: 16:00)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group mb-6">
+                        <i class="fas fa-calendar-day input-icon"></i>
+                        <input type="text" id="agendaDiaSemana" placeholder="Dia da Semana (Ex: SÁBADO / DOMINGO)" class="w-full custom-input p-3 rounded text-white text-sm focus:outline-none uppercase">
+                    </div>
+
+                    <button onclick="generateAgenda()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fas fa-calendar-plus"></i> Gerar Agenda
                     </button>
+
+                     <!-- Output -->
+                     <div id="agendaResult" class="hidden mt-6 animate-fade-in">
+                        <div class="bg-black/50 p-4 rounded-t-lg border border-gray-700 font-mono text-xs text-green-400 whitespace-pre-wrap" id="agendaOutput"></div>
+                        <button onclick="copyText('agendaOutput')" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-b-lg text-sm border-t border-gray-700 flex items-center justify-center gap-2">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
                 </div>
             </div>
 
-        </div>
+    
+            <div id="controle" class="hidden-section fade-in max-w-5xl mx-auto">
+                <div class="text-center mb-10">
+                    <span class="text-green-500 font-bold tracking-[0.3em] uppercase text-xs">Administração Financeira & Pessoal</span>
+                    <h2 class="text-3xl font-bold text-white mt-2">Controle R.P.S.</h2>
+                </div>
 
-    </main>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                    <a href="https://docs.google.com/spreadsheets/d/1J-5ip_xHsbOXDdnPRL0YXwbDySOCS5MKC5x_5o-hxXU/edit?gid=1250760507#gid=1250760507" target="_blank" class="glass-panel p-8 rounded-xl group hover:bg-green-500/10 transition border border-green-500/20 relative overflow-hidden flex flex-col items-center text-center">
+                         <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                         <div class="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mb-6 group-hover:scale-110 transition duration-300">
+                            <i class="fas fa-money-bill-wave text-3xl"></i>
+                         </div>
+                         <h3 class="text-2xl font-bold text-white mb-2">Controle de Pagamentos</h3>
+                         <p class="text-gray-400 text-sm mb-6">Acesse a planilha oficial de controle financeiro e pagamentos da corporação.</p>
+                         <span class="text-green-400 font-bold uppercase text-xs tracking-widest border border-green-500/50 px-4 py-2 rounded hover:bg-green-500 hover:text-black transition">
+                            Acessar Planilha <i class="fas fa-external-link-alt ml-2"></i>
+                         </span>
+                    </a>
 
-    <!-- MODAL CÓDIGOS (NOVO) -->
+                  
+                    <a href="https://docs.google.com/spreadsheets/d/1CNcSTtQjXyqlFc0I9LrcUFIObfomawcz/edit?gid=603778748#gid=603778748" target="_blank" class="glass-panel p-8 rounded-xl group hover:bg-yellow-500/10 transition border border-yellow-500/20 relative overflow-hidden flex flex-col items-center text-center">
+                        <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                         <div class="w-20 h-20 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 mb-6 group-hover:scale-110 transition duration-300">
+                            <i class="fas fa-medal text-3xl"></i>
+                         </div>
+                         <h3 class="text-2xl font-bold text-white mb-2">Condecorações</h3>
+                         <p class="text-gray-400 text-sm mb-6">Consulte e registre as medalhas, honrarias e condecorações dos oficiais.</p>
+                         <span class="text-yellow-400 font-bold uppercase text-xs tracking-widest border border-yellow-500/50 px-4 py-2 rounded hover:bg-yellow-500 hover:text-black transition">
+                            Acessar Planilha <i class="fas fa-external-link-alt ml-2"></i>
+                         </span>
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
     <div id="modal-codes" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleModal('modal-codes')"></div>
         
@@ -815,10 +937,115 @@
 
     <!-- JS LOGIC -->
     <script>
+        // LOGIN CONFIGURATION
+        const CORRECT_USER = "Comandos";
+        const CORRECT_PASS = "RPScomandos2026-as1b352c9"; 
+
+        const INSTRUCTOR_USER = "Instrutores";
+        const INSTRUCTOR_PASS = "RPSinstrutores2025-a1b2c5";
+
+        // Login Logic
+        function handleLogin(e) {
+            e.preventDefault();
+            // Trim inputs to remove accidental spaces
+            const userInput = document.getElementById('loginUser').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            const box = document.querySelector('.login-box');
+            
+            let isValid = false;
+            let role = 'guest';
+
+            if (userInput === CORRECT_USER && passInput === CORRECT_PASS) {
+                isValid = true;
+                role = 'admin';
+            } else if (userInput === INSTRUCTOR_USER && passInput === INSTRUCTOR_PASS) {
+                isValid = true;
+                role = 'instructor';
+            }
+
+            if (isValid) {
+                // Success
+                localStorage.setItem('rps_logged_in', 'true');
+                localStorage.setItem('rps_user_role', role);
+                grantAccess();
+            } else {
+                // Error
+                box.classList.add('shake');
+                showToast("Credenciais Incorretas!");
+                document.getElementById('loginPass').value = '';
+                setTimeout(() => box.classList.remove('shake'), 500);
+            }
+        }
+
+        function grantAccess() {
+            const loginScreen = document.getElementById('login-screen');
+            const appContent = document.getElementById('app-content');
+            
+            // Check Access Level
+            const role = localStorage.getItem('rps_user_role');
+            updateUIForRole(role);
+
+            loginScreen.style.opacity = '0';
+            setTimeout(() => {
+                // Force display none via JS style to ensure it's removed from flow
+                loginScreen.style.display = 'none';
+                loginScreen.classList.add('hidden');
+                
+                appContent.classList.remove('hidden');
+                appContent.classList.add('fade-in');
+            }, 500);
+        }
+
+        function checkSession() {
+            if (localStorage.getItem('rps_logged_in') === 'true') {
+                const loginScreen = document.getElementById('login-screen');
+                const appContent = document.getElementById('app-content');
+                
+                // Restore role state
+                const role = localStorage.getItem('rps_user_role');
+                updateUIForRole(role);
+
+                // Force display none immediately if logged in
+                loginScreen.style.display = 'none';
+                loginScreen.classList.add('hidden');
+                appContent.classList.remove('hidden');
+            }
+        }
+
+        function updateUIForRole(role) {
+            const navControle = document.getElementById('nav-controle');
+            const mobileNavControle = document.getElementById('mobile-nav-controle');
+
+            if (role === 'instructor') {
+                // HIDE CONTROLE
+                if(navControle) navControle.style.display = 'none';
+                if(mobileNavControle) mobileNavControle.style.display = 'none';
+            } else {
+                // SHOW EVERYTHING (Admin)
+                if(navControle) navControle.style.display = 'block';
+                if(mobileNavControle) mobileNavControle.style.display = 'block';
+            }
+        }
+
+        function doLogout() {
+            localStorage.removeItem('rps_logged_in');
+            localStorage.removeItem('rps_user_role');
+            location.reload();
+        }
+
         // Navigation Logic
         function navigateTo(sectionId) {
+            // Check permissions for Controle
+            if (sectionId === 'controle') {
+                const role = localStorage.getItem('rps_user_role');
+                if (role === 'instructor') {
+                    showToast("Acesso Negado: Apenas Comandos.");
+                    return;
+                }
+            }
+
             // Hide all sections
-            const sections = ['home', 'anuncios', 'guia', 'materiais', 'gestao'];
+            const sections = ['home', 'anuncios', 'guia', 'materiais', 'gestao', 'controle'];
             sections.forEach(id => {
                 document.getElementById(id).classList.add('hidden-section');
             });
@@ -886,7 +1113,6 @@
         }
 
         // ---------------------------------------------------------
-        // MODAL LOGIC (NOVO)
         // ---------------------------------------------------------
         function toggleModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -899,7 +1125,6 @@
         }
 
         // ---------------------------------------------------------
-        // CRONOMETRO LOGIC (NOVO)
         // ---------------------------------------------------------
         let timerInterval;
         let timerSeconds = 0;
@@ -932,7 +1157,6 @@
         }
 
         // ---------------------------------------------------------
-        // IMPROVED DATE SYSTEM
         // ---------------------------------------------------------
         
         function formatDateForInput(date) {
@@ -967,12 +1191,14 @@
                 
                 const days = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
                 const dayName = days[adjustedDate.getDay()];
-                document.getElementById('agendaDiaSemana').value = dayName;
+                const targetId = dateElementId === 'agendaData' ? 'agendaDiaSemana' : null;
+                if(targetId) document.getElementById(targetId).value = dayName;
             }
         }
 
         // Initialize Dates on Load
         document.addEventListener('DOMContentLoaded', function() {
+            checkSession(); // CHECK LOGIN
             setToday('certData');
             setToday('agendaData');
             generateRecruitmentCards(); // Load cards
@@ -983,7 +1209,6 @@
         });
 
         // ---------------------------------------------------------
-        // TOAST NOTIFICATION SYSTEM
         // ---------------------------------------------------------
         function showToast(message) {
             const container = document.getElementById('toast-container');
@@ -1021,7 +1246,6 @@
         }
 
         // ---------------------------------------------------------
-        // GENERATORS
         // ---------------------------------------------------------
 
         function generateCertificate() {
@@ -1143,7 +1367,6 @@
         }
 
         // ---------------------------------------------------------
-        // CARDS GENERATION (SCRIPTS)
         // ---------------------------------------------------------
         function generateRecruitmentCards() {
             const times = ['16:00', '18:30', '20:00', '22:00'];
